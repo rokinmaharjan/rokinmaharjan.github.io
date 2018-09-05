@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<!--
+Prologue by HTML5 UP
+html5up.net | @ajlkn
+Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+Jekyll integration by Chris Bobbe | chrisbobbe.github.io
+-->
+<html><head><!-- Robots -->
+  <meta name="robots" content="index, follow" /><link rel="canonical" href="http://localhost:4000/2018/09/02/docker-commands-cheatsheet.html" /><!-- Title, description, author --><title>Docker commands cheatsheet | Rokin - Playing God on Earth</title>
+  <meta name="description" content="I am Rokin and I like playing God!" />
+  <meta name="author" content="Rokin Maharjan" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Docker commands cheatsheet | Rokin - Playing God on Earth" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://localhost:4000/assets/images/avatar.jpg" />
+  <meta property="og:url" content="http://localhost:4000/2018/09/02/docker-commands-cheatsheet.html" />
+  <meta property="og:site_name" content="Rokin" />
+  <meta property="og:description" content="I am Rokin and I like playing God!" />
+  
+  <!-- Styles -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!--[if lte IE 8]><script src="/assets/js/ie/html5shiv.js" defer></script><![endif]-->
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie8.css" /><![endif]-->
+  <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+
+  <!-- Scripts -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" defer></script>
+  <script src="/assets/js/jquery.scrolly.min.js" defer></script>
+  <script src="/assets/js/jquery.scrollzer.min.js" defer></script>
+  <script src="/assets/js/skel.min.js" defer></script>
+  <script src="/assets/js/util.js" defer></script>
+  <!--[if lte IE 8]><script src="/assets/js/ie/respond.min.js" defer></script><![endif]-->
+  <script src="/assets/js/main.js" defer></script>
+
+</head><body><!-- Header -->
+<div id="header">
+  <div class="top"><!-- Logo -->
+<div id="logo">
+  <a href="http://localhost:4000/" id="home-link">
+    <span class="image avatar48"><img src="/assets/images/avatar.jpg" alt="Avatar of Rokin Maharjan" /></span>
+    <h1 id="title">Rokin</h1>
+    <p>Playing God on Earth</p>
+  </a>
+</div><!-- Nav -->
+<nav id="nav">
+  <ul><li><a href="http://localhost:4000/" id="home-link">
+            <span class="icon fa-home">Home</span>
+          </a></li><li><a href="http://localhost:4000/blog.html" id="blog-link">
+            <span class="icon fa-pencil-alt">Blog</span>
+          </a></li><li><a href="http://localhost:4000/reading-list.html" id="reading-list-link">
+            <span class="icon fa-book">Reading List</span>
+          </a></li></ul>
+</nav></div>
+  <div class="bottom"><!-- Social Icons -->
+<ul class="icons"><li><a href="https://twitter.com/quotehouse8" class="icon-b fa-twitter"><span class="label">Twitter</span></a></li><li><a href="https://www.linkedin.com/in/rokin/" class="icon-b fa-linkedin-in"><span class="label">LinkedIn</span></a></li><li><a href="mailto:rokinmaharjan@gmail.com" class="icon fa-envelope"><span class="label">Email</span></a></li></ul>
+</div>
+</div>
+<!-- Main -->
+<div id="main">
+	<!-- Post -->
+	<article class="shade-two">
+	  <div class="container">
+			<header>
+				<h2>Docker commands cheatsheet</h2>
+				<p>02 September 2018</p>
+			</header><p><img src="https://files.realpython.com/media/flask-docker.272232b872e7.png" />   <br />
+In this article, we will learn how to run a flask application in a docker container by following these simple steps:</p>
+
+<h3 id="step-1-create-a-simple-flask-application">Step 1: Create a simple flask application</h3>
+<p>First of all, lets create a simple flask application. Save the code shown below as <strong><em>app.py</em></strong>.</p>
+
+<pre><code>
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def joke():
+    return "I haven't slept for three days, because that would be too long"
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)
+</code></pre>
+
+<h3 id="step-2-create-a-dockerfile">Step 2: Create a Dockerfile</h3>
+<p>Now that we have a flask application, let us create a Dockerfile to install the necessary dependencies and run it in a docker container. Save the following code as <strong><em>Dockerfile</em></strong> in the same directory as your <strong><em>app.py</em></strong>.</p>
+
+<pre><code>
+FROM ubuntu:16.04
+
+RUN apt-get update -y    
+RUN apt-get install python -y    
+RUN apt-get install python-pip -y    
+RUN pip install flask
+
+COPY app.py /home/app.py
+
+ENTRYPOINT FLASK_APP=/home/app.py flask run --host=0.0.0.0
+</code></pre>
+<p>This <strong><em>RUN</em></strong> commands in this Dockerfile installs python, python-pip and flask in our docker container. The <strong><em>COPY</em></strong> command copies the app.py file in our computer to /home directory of our docker container. The <strong><em>ENTRYPOINT</em></strong> command starts the flask application when you run the docker container.</p>
+
+<h3 id="step-3-building-a-docker-image">Step 3: Building a docker image</h3>
+<p>In this step, we will build a docker image using the Dockerfile we created in step 2. Run the following command to build an image:</p>
+<pre><code>docker build . -t flask-app</code></pre>
+<p>You can verify that this image is created by running</p>
+<pre><code>docker images</code></pre>
+
+<h3 id="step-4-running-the-flask-app-in-docker-container">Step 4: Running the flask app in docker container</h3>
+<p>We are all set to run our flask application in a docker container. We can do this by running the following command:</p>
+<pre><code>docker run -p 8080:5000 flask-app</code></pre>
+<p>You should see output like this  <br />
+<img src="https://cdn-images-1.medium.com/max/800/1*X82xd1fUgDJGEOpKBnCbtQ.png" /></p>
+
+<h3 id="step-5-testing-our-application">Step 5: Testing our application</h3>
+<p>Open a web browser and go to <strong>http://localhost:8080/</strong> to verify that the application is up and running.</p>
+</div>
+	</article>
+</div><!-- Footer -->
+<div id="footer">
+  
+  <!-- Copyright -->
+  <ul class="copyright">
+    
+      <li>&copy;Rokin. All rights reserved.</li>
+    
+    <!-- <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    <li>Jekyll integration: <a href="https://chrisbobbe.github.io/">Chris Bobbe</a></li> -->
+  </ul>
+  
+</div></body>
+</html>
